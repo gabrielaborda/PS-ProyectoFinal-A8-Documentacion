@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RehabACV — Sistema de Rehabilitación Pediátrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --blue-mid: #378ADD;
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --text: #0f1923;
+    --text2: #4a5568;
+    --text3: #94a3b8;
+    --surface: #ffffff;
+    --surface2: #f8fafc;
+    --border: #e2e8f0;
+    --red: #E24B4A;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--blue);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--teal); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--blue); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 2rem 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(55,138,221,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(29,158,117,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(24,95,165,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(24,95,165,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(24,95,165,0.15);
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--blue-mid);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.4rem, 5vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  h1 .accent { color: var(--blue); }
+  h1 .accent-teal { color: var(--teal); }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--text2);
+    line-height: 1.75;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: white;
+  }
+
+  .btn-primary:hover { background: #0C447C; transform: translateY(-1px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ui-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  .ui-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .ui-card-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+  }
+
+  .status-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .status-green { background: var(--teal-light); color: var(--teal); }
+  .status-blue { background: var(--blue-light); color: var(--blue); }
+
+  .patient-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .patient-row:last-child { border-bottom: none; }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .avatar.teal { background: var(--teal-light); color: var(--teal); }
+
+  .patient-info { flex: 1; }
+  .patient-name { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+  .patient-sub { font-size: 0.72rem; color: var(--text3); }
+
+  .mini-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--blue-mid);
+  }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .metric-mini {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .metric-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--blue);
+    display: block;
+  }
+
+  .metric-lbl {
+    font-size: 0.65rem;
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 90px 2rem;
+  }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .section-desc {
+    font-size: 1rem;
+    color: var(--text2);
+    max-width: 560px;
+    font-weight: 300;
+    margin-bottom: 3rem;
+  }
+
+  /* ABOUT */
+  .about-bg { background: var(--surface2); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--text2);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .feature-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--blue-light);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+
+  .feature-icon.teal { background: var(--teal-light); color: var(--teal); }
+
+  .feature-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .feature-desc {
+    font-size: 0.82rem;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  /* STACK */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .stack-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .stack-card:hover { border-color: var(--blue-mid); transform: translateY(-2px); }
+
+  .stack-layer {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.5rem;
+  }
+
+  .stack-tech {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+
+  .stack-detail {
+    font-size: 0.78rem;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .stack-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-bottom: 0.75rem;
+  }
+
+  .dot-blue { background: var(--blue); }
+  .dot-teal { background: var(--teal); }
+  .dot-amber { background: #EF9F27; }
+  .dot-purple { background: #7F77DD; }
+
+  /* TESTING */
+  .testing-bg { background: var(--surface2); }
+
+  .testing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 3rem;
+  }
+
+  .test-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .test-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .test-type {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .test-count {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .test-desc {
+    font-size: 0.8rem;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .why-box {
+    background: var(--blue);
+    border-radius: 16px;
+    padding: 2.5rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .why-box h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .why-box p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .why-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .why-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.9);
+    font-weight: 300;
+  }
+
+  .why-check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 0.65rem;
+    color: white;
+  }
+
+  /* TEAM */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .team-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+  }
+
+  .team-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+  }
+
+  .team-role {
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-weight: 300;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-left {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--blue);
+  }
+
+  .footer-left span { color: var(--teal); }
+
+  .footer-center {
+    font-size: 0.8rem;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  .license-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 48px;
+    height: 3px;
+    background: var(--blue);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .about-grid { grid-template-columns: 1fr; }
+    .why-box { grid-template-columns: 1fr; }
+    nav .nav-links { display: none; }
+    footer { flex-direction: column; text-align: center; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-left > * {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-left > *:nth-child(2) { animation-delay: 0.2s; }
+  .hero-left > *:nth-child(3) { animation-delay: 0.3s; }
+  .hero-left > *:nth-child(4) { animation-delay: 0.4s; }
+
+  .hero-visual {
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Rehab<span>ACV</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Descripción</a></li>
+    <li><a href="#stack">Tecnologías</a></li>
+    <li><a href="#testing">Pruebas</a></li>
+    <li><a href="#equipo">Equipo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">Proyecto de Pruebas de Software</div>
+      <h1>
+        Plataforma clínica de<br/>
+        <span class="accent">rehabilitación</span><br/>
+        <span class="accent-teal">pediátrica ACV</span>
+      </h1>
+      <p class="hero-desc">
+        Sistema web para la gestión y seguimiento de sesiones terapéuticas
+        en pacientes de 4 a 17 años con accidente cerebrovascular,
+        integrado con tecnología Kinect y Unity.
+      </p>
+      <div class="hero-actions">
+        <a href="https://github.com/gabrielaborda/PS-ProyectoFinal-A8.git" class="btn btn-primary" target="_blank">
+          ⟶ Ver repositorio
+        </a>
+        <a href="#testing" class="btn btn-outline">Ver pruebas</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="ui-card">
+        <div class="ui-card-header">
+          <span class="ui-card-title">Pacientes activos</span>
+          <span class="status-badge status-green">En sesión</span>
+        </div>
+        <div class="patient-row">
+          <div class="avatar">MP</div>
+          <div class="patient-info">
+            <div class="patient-name">María Paciente</div>
+            <div class="patient-sub">Sesión 4 · hace 12 min</div>
+          </div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:72%"></div></div>
+        </div>
+        <div class="patient-row">
+          <div class="avatar teal">LP</div>
+          <div class="patient-info">
+            <div class="patient-name">Luis Pérez</div>
+            <div class="patient-sub">Sesión 7 · programada</div>
+          </div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:40%; background: var(--teal)"></div></div>
+        </div>
+      </div>
+
+      <div class="ui-card">
+        <div class="ui-card-header">
+          <span class="ui-card-title">Resultados · sesión actual</span>
+          <span class="status-badge status-blue">Completada</span>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-mini">
+            <span class="metric-val">5 400</span>
+            <span class="metric-lbl">Puntaje</span>
+          </div>
+          <div class="metric-mini">
+            <span class="metric-val">25</span>
+            <span class="metric-lbl">Monedas</span>
+          </div>
+          <div class="metric-mini">
+            <span class="metric-val">3 min</span>
+            <span class="metric-lbl">Duración</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-bg" id="about">
+  <div class="section-inner">
+    <p class="section-label">Descripción del proyecto</p>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>¿Qué hace RehabACV?</h2>
+        <p>
+          RehabACV es una plataforma clínica web diseñada para apoyar la rehabilitación
+          motora de niños y adolescentes que han sufrido un accidente cerebrovascular (ACV).
+          Permite a especialistas configurar, ejecutar y analizar sesiones terapéuticas
+          basadas en videojuego mediante el dispositivo Kinect.
+        </p>
+        <p>
+          El sistema integra un módulo de juego desarrollado en Unity donde el paciente
+          controla un kayak con el movimiento de su cuerpo. Los datos biométricos capturados
+          por Kinect (centro de masa, inclinación, pitch) se almacenan y visualizan
+          en tiempo real para el especialista.
+        </p>
+        <p>
+          La plataforma gestiona roles diferenciados para superadministradores, administradores
+          y especialistas, con trazabilidad de auditoría de todas las acciones del sistema.
+        </p>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">👤</div>
+          <div>
+            <div class="feature-title">Gestión de pacientes y especialistas</div>
+            <div class="feature-desc">Fichas clínicas completas, consentimiento informado, historial de sesiones y evolución por paciente.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon teal">🎮</div>
+          <div>
+            <div class="feature-title">Configuración de sesión terapéutica</div>
+            <div class="feature-desc">Parámetros ajustables: velocidad, dificultad, duración. Integración directa con Unity via API REST.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <div>
+            <div class="feature-title">Visualización de resultados Kinect</div>
+            <div class="feature-desc">Gráficas de trayectoria del centro de masa, inclinación lateral y frontal, métricas de estabilidad.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon teal">🔒</div>
+          <div>
+            <div class="feature-title">Autenticación JWT y trazabilidad</div>
+            <div class="feature-desc">Control de acceso por roles, log de auditoría con exportación CSV/PDF y persistencia de sesión segura.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="section-inner">
+    <p class="section-label">Stack tecnológico</p>
+    <div class="divider"></div>
+    <h2>Tecnologías utilizadas</h2>
+    <p class="section-desc">Arquitectura desacoplada con frontend React y backend FastAPI, comunicados via HTTP REST con autenticación JWT.</p>
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="stack-dot dot-blue"></div>
+        <div class="stack-layer">Frontend — UI</div>
+        <div class="stack-tech">React 19 + Vite</div>
+        <div class="stack-detail">Node.js 22 · TypeScript · Tailwind CSS 4 · Zustand · React Hook Form · Recharts</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-dot dot-teal"></div>
+        <div class="stack-layer">Backend — API</div>
+        <div class="stack-tech">Python + FastAPI</div>
+        <div class="stack-detail">Python 3.11 · SQLAlchemy · SQLite · JWT · Uvicorn</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-dot dot-amber"></div>
+        <div class="stack-layer">Juego terapéutico</div>
+        <div class="stack-tech">Unity + Kinect</div>
+        <div class="stack-detail">Motor de juego Unity integrado con sensor Kinect para captura de movimiento corporal en tiempo real.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-dot dot-purple"></div>
+        <div class="stack-layer">Testing</div>
+        <div class="stack-tech">Vitest + RTL</div>
+        <div class="stack-detail">Vitest · React Testing Library · jsdom · 40 pruebas unitarias e integración</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTING -->
+<section class="testing-bg" id="testing">
+  <div class="section-inner">
+    <p class="section-label">Pruebas de software</p>
+    <div class="divider"></div>
+    <h2>Estrategia de testing</h2>
+    <p class="section-desc">Suite completa de pruebas automatizadas con cobertura de los módulos críticos del sistema clínico.</p>
+
+    <div class="testing-grid">
+      <div class="test-card">
+        <div class="test-card-top">
+          <span class="test-type">Unitarias</span>
+          <span class="status-badge status-blue">Vitest</span>
+        </div>
+        <div class="test-count">31</div>
+        <div class="test-desc">Pruebas de componentes aislados: login, dashboard, pacientes, usuarios. Verificación de lógica de negocio y renderizado.</div>
+      </div>
+      <div class="test-card">
+        <div class="test-card-top">
+          <span class="test-type">Integración</span>
+          <span class="status-badge status-green">RTL</span>
+        </div>
+        <div class="test-count">9</div>
+        <div class="test-desc">Flujos completos de interacción: creación de pacientes, sesiones, activación de especialistas y navegación entre vistas.</div>
+      </div>
+      <div class="test-card">
+        <div class="test-card-top">
+          <span class="test-type">Aceptación</span>
+          <span class="status-badge status-blue">Manual</span>
+        </div>
+        <div class="test-count">13</div>
+        <div class="test-desc">Criterios de aceptación definidos por el cliente para cada requerimiento funcional del sistema. Validados con el ingeniero responsable.</div>
+      </div>
+    </div>
+
+    <div class="why-box">
+      <div>
+        <h3>¿Por qué RehabACV para el curso de Pruebas?</h3>
+        <p>
+          Este proyecto fue seleccionado por su complejidad real: combina autenticación con roles,
+          flujos críticos de sesión clínica, integración con hardware externo (Kinect) y
+          un contexto de uso médico donde los errores tienen consecuencias directas en pacientes.
+        </p>
+      </div>
+      <ul class="why-list">
+        <li>
+          <div class="why-check">✓</div>
+          Múltiples roles de usuario con permisos diferenciados
+        </li>
+        <li>
+          <div class="why-check">✓</div>
+          Flujos críticos: sesión activa, navegación protegida, cierre automático
+        </li>
+        <li>
+          <div class="why-check">✓</div>
+          Integración con servicios externos (Unity, Kinect API)
+        </li>
+        <li>
+          <div class="why-check">✓</div>
+          Dominio médico-clínico: requisitos de calidad exigentes
+        </li>
+        <li>
+          <div class="why-check">✓</div>
+          Arquitectura full-stack con frontend React y backend FastAPI
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPO -->
+<section id="equipo">
+  <div class="section-inner">
+    <p class="section-label">Equipo de desarrollo</p>
+    <div class="divider"></div>
+    <h2>Integrantes</h2>
+    <p class="section-desc">Curso: Pruebas de Software  ·  Institución: Universidad Nacional de San Agustín</p>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">___</div>
+        <div class="team-name">Betanzos Rosas Taylor Anthony</div>
+        <div class="team-role">_______________</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">___</div>
+        <div class="team-name">Borda Espinoza Gabriela Nayely</div>
+        <div class="team-role">_______________</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">___</div>
+        <div class="team-name">Ccorimanya Zamata José Luis</div>
+        <div class="team-role">_______________</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">___</div>
+        <div class="team-name">Ccoscco Alvis Italo Frankdux</div>
+        <div class="team-role">_______________</div>
+      </div>
+            <div class="team-card">
+        <div class="team-avatar">___</div>
+        <div class="team-name">Garcia Valdivia Ronald Pablo</div>
+        <div class="team-role">_______________</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">___</div>
+        <div class="team-name">Orbegozo Lescano Joshua Gilbert</div>
+        <div class="team-role">_______________</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Rehab<span>ACV</span></div>
+  <div class="footer-center">
+    Proyecto académico 
+  </div>
+</footer>
+
+</body>
+</html>
